@@ -22,7 +22,13 @@ function getClient(): SupabaseClient {
     const url = process.env.SUPABASE_URL;
     const key = process.env.SUPABASE_SECRET_KEY;
     if (!url || !key) {
-      throw new Error("缺少 SUPABASE_URL 或 SUPABASE_SECRET_KEY 環境變數");
+      // 暫時偵錯：列出執行環境中所有 SUPABASE 開頭的變數名稱（只列名稱，不含值）
+      const seen = Object.keys(process.env).filter((k) =>
+        k.toUpperCase().includes("SUPABASE")
+      );
+      throw new Error(
+        `缺少環境變數。目前看得到的 SUPABASE 變數：[${seen.join(", ")}]`
+      );
     }
     supabase = createClient(url, key);
   }

@@ -13,7 +13,9 @@ export async function GET() {
     return NextResponse.json(messages);
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: "讀取留言失敗" }, { status: 500 });
+    // 暫時：把真正的錯誤訊息回傳出來方便診斷（之後會移除）
+    const detail = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: "讀取留言失敗", detail }, { status: 500 });
   }
 }
 

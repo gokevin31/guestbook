@@ -22,10 +22,7 @@ function getClient(): SupabaseClient {
     const url = process.env.SUPABASE_URL;
     const key = process.env.SUPABASE_SECRET_KEY;
     if (!url || !key) {
-      // 暫時偵錯：回報兩個值的長度（只報長度，不洩漏內容）
-      throw new Error(
-        `環境變數值有問題。SUPABASE_URL 長度=${(process.env.SUPABASE_URL ?? "").length}，SUPABASE_SECRET_KEY 長度=${(process.env.SUPABASE_SECRET_KEY ?? "").length}`
-      );
+      throw new Error("缺少 SUPABASE_URL 或 SUPABASE_SECRET_KEY 環境變數");
     }
     supabase = createClient(url, key);
   }

@@ -8,7 +8,13 @@ import { getMessages, addMessage } from "@/lib/messages";
 
 // GET /api/messages：回傳目前所有留言
 export async function GET() {
-  return NextResponse.json(getMessages());
+  try {
+    const messages = await getMessages();
+    return NextResponse.json(messages);
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "讀取留言失敗" }, { status: 500 });
+  }
 }
 
 // POST /api/messages：新增一筆留言
@@ -27,7 +33,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "留言請少於 500 字" }, { status: 400 });
   }
 
-  // 沒填暱稱就當作「匿名」
-  const message = addMessage(name || "匿名", content);
-  return NextResponse.json(message, { status: 201 });
+  try {
+    // 沒填暱稱就當作「匿名」
+    const message = await addMessage(name || "匿名", content);
+    return NextResponse.json(message, { status: 201 });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "留言儲存失敗" }, { status: 500 });
+  }
 }

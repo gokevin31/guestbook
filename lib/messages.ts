@@ -1,10 +1,11 @@
 // 留言的資料存取層（Data Layer）
 //
-// 目前先用「記憶體陣列」暫存留言。
-// ⚠️ 注意：伺服器重新啟動或 Vercel 重新部署時，這裡的留言會全部清空。
+// 現在改用 Supabase（雲端 Postgres 資料庫）保存留言，
+// 所以重新部署、伺服器重啟，留言都不會消失了。
 //
-// 之後要接真正的資料庫（例如 Vercel Postgres / Neon）時，
-// 只要把下面三個函式的內容換成資料庫操作即可，其他檔案完全不用動。
+// 只在伺服器端（API route）使用 secret key，金鑰放在環境變數，不會外洩。
+
+import { createClient } from "@supabase/supabase-js";
 
 export type Message = {
   id: number;
@@ -13,23 +14,42 @@ export type Message = {
   createdAt: string; // 留言時間（ISO 字串）
 };
 
-// 留言暫存在這個陣列裡
-const messages: Message[] = [];
-let nextId = 1;
+// 連線到 Supabase
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SECRET_KEY!
+);
 
-// 取得所有留言（最新的排在最前面）
-export function getMessages(): Message[] {
-  return [...messages].sort((a, b) => b.id - a.id);
+// 資料庫裡的欄位是 created_at，前端用的是 createdAt，這裡做轉換
+type Row = { id: number; name: string; content: string; created_at: string };
+function toMessage(row: Row): Message {
+  return {
+    id: row.id,
+    name: row.name,
+    content: row.content,
+    createdAt: row.created_at,
+  };
 }
 
-// 新增一筆留言，回傳新增後的留言物件
-export function addMessage(name: string, content: string): Message {
-  const message: Message = {
-    id: nextId++,
-    name,
-    content,
-    createdAt: new Date().toISOString(),
-  };
-  messages.push(message);
-  return message;
+// 取得所有留言（最新的排在最前面）
+export async function getMessages(): Promise<Message[]> {
+  const { data, error } = await supabase
+    .from("messages")
+    .select("*")
+    .order("id", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return (data as Row[]).map(toMessage);
+}
+
+// 新增一筆留言，回傳新增後的留言
+export async function addMessage(name: string, content: string): Promise<Message> {
+  const { data, error } = await supabase
+    .from("messages")
+    .insert({ name, content })
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return toMessage(data as Row);
 }

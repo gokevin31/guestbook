@@ -1,0 +1,120 @@
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+.title {
+  font-size: 32px;
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  color: #666;
+  margin: 0 0 24px;
+}
+
+/* 表單 */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background: #fafafa;
+  margin-bottom: 32px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #0070f3;
+}
+
+.button {
+  align-self: flex-end;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #0070f3;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  background: #0059c1;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #d4351c;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* 留言列表 */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.empty {
+  color: #999;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.card {
+  padding: 14px 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.cardHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.time {
+  color: #999;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.content {
+  margin: 0;
+  white-space: pre-wrap; /* 保留換行 */
+  word-break: break-word;
+  line-height: 1.6;
+}

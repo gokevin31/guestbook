@@ -1,0 +1,33 @@
+// 留言的後端 API
+// 網址：/api/messages
+//   GET  → 取得所有留言
+//   POST → 新增一筆留言
+
+import { NextResponse } from "next/server";
+import { getMessages, addMessage } from "@/lib/messages";
+
+// GET /api/messages：回傳目前所有留言
+export async function GET() {
+  return NextResponse.json(getMessages());
+}
+
+// POST /api/messages：新增一筆留言
+export async function POST(request: Request) {
+  const body = await request.json();
+
+  // 整理輸入：去掉前後空白
+  const name = String(body?.name ?? "").trim();
+  const content = String(body?.content ?? "").trim();
+
+  // 簡單驗證
+  if (!content) {
+    return NextResponse.json({ error: "留言內容不能空白" }, { status: 400 });
+  }
+  if (content.length > 500) {
+    return NextResponse.json({ error: "留言請少於 500 字" }, { status: 400 });
+  }
+
+  // 沒填暱稱就當作「匿名」
+  const message = addMessage(name || "匿名", content);
+  return NextResponse.json(message, { status: 201 });
+}

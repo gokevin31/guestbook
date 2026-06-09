@@ -22,12 +22,9 @@ function getClient(): SupabaseClient {
     const url = process.env.SUPABASE_URL;
     const key = process.env.SUPABASE_SECRET_KEY;
     if (!url || !key) {
-      // 暫時偵錯：列出執行環境中所有 SUPABASE 開頭的變數名稱（只列名稱，不含值）
-      const seen = Object.keys(process.env).filter((k) =>
-        k.toUpperCase().includes("SUPABASE")
-      );
+      // 暫時偵錯：回報兩個值的長度（只報長度，不洩漏內容）
       throw new Error(
-        `缺少環境變數。目前看得到的 SUPABASE 變數：[${seen.join(", ")}]`
+        `環境變數值有問題。SUPABASE_URL 長度=${(process.env.SUPABASE_URL ?? "").length}，SUPABASE_SECRET_KEY 長度=${(process.env.SUPABASE_SECRET_KEY ?? "").length}`
       );
     }
     supabase = createClient(url, key);
